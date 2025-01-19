@@ -29,6 +29,7 @@
 
 #include "../../Application/Interfaces/ICameraController.h"
 #include "../../Utilities/Interfaces/IFileSystem.h"
+#include "../../Utilities/Interfaces/IThread.h"
 
 #include "../../Utilities/Interfaces/IMemory.h"
 
@@ -112,8 +113,8 @@ LuaManagerImpl::~LuaManagerImpl()
     arrfree(m_Functions);
 
     for (uint32_t i = 0; i < MAX_LUA_WORKERS; ++i)
-        destroyMutex(&m_AsyncLuaStatesMutex[i]);
-    destroyMutex(&m_AddAsyncScriptMutex);
+        exitMutex(&m_AsyncLuaStatesMutex[i]);
+    exitMutex(&m_AddAsyncScriptMutex);
 
     m_registered = false;
     bdestroy(&m_UpdatableScriptExitName);

@@ -31,8 +31,8 @@ STRUCT(VSOutput)
 {
 	DATA(float4, Position, SV_Position);
 	DATA(float2, TexCoord, TEXCOORD0);
-	DATA(FLAT(uint), InstanceId, TEXCOORD1);
-	DATA(FLAT(uint), ParticleSetIndex, TEXCOORD2);
+	DATA(FLAT(uint), Color, TEXCOORD1);
+	DATA(FLAT(uint), TexIndex, TEXCOORD2);
 };
 
 EARLY_FRAGMENT_TESTS
@@ -40,27 +40,37 @@ void PS_MAIN( VSOutput In )
 {
 	INIT_MAIN;
 
-	uint bufferIdx = Get(ScreenSize).x * uint(In.Position.y) + uint(In.Position.x);
-	if (Get(TransparencyListHeads)[bufferIdx] > MAX_TRANSPARENCY_LAYERS)
+	uint bufferIdx = ParticleConstantBuffer.ScreenSize.x * uint(In.Position.y) + uint(In.Position.x);
+	if (TransparencyListHeads[bufferIdx] >= MAX_TRANSPARENCY_LAYERS)
 	{
+#if defined(METAL)
 		clip(-1);
+#endif
+		RETURN();
 	}
 
 	float4 texColor;
 
-	uint texIndex = In.ParticleSetIndex;
+	uint texIndex = In.TexIndex;
 
-	BeginNonUniformResourceIndex(texIndex, MAX_PARTICLE_SET_COUNT);
-		texColor = SampleTex2D(Get(ParticleTextures)[texIndex], Get(LinearClampSampler), In.TexCoord);
+	BeginNonUniformResourceIndex(texIndex, MAX_PARTICLE_TEXTURES_COUNT);
+		texColor = SampleTex2D(ParticleTextures[texIndex], LinearClampSampler, In.TexCoord);
 	EndNonUniformResourceIndex();
+	texColor = texColor * unpackUnorm4x8(In.Color); 
 
 	if (texColor.w <= TRANSPARENCY_CONTRIBUTION_THRESHOLD)
 	{
+#if defined(METAL)
 		clip(-1);
+#endif
+		RETURN();
 	}
-	texColor = float4(texColor.xyz * GetParticleSet(In.ParticleSetIndex).Color, texColor.w);
 
-	SaveTransparencyEntry(Get(ScreenSize), uint2(In.Position.xy), texColor, In.Position.z);
+	SaveTransparencyEntry(ParticleConstantBuffer.ScreenSize, uint2(In.Position.xy), texColor, In.Position.z);
+	
+	// This saves a considerable amount of time on non-Metal platforms
+#if defined(METAL)
 	clip(-1);
+#endif
 	RETURN();
 }

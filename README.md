@@ -1,16 +1,15 @@
 <img src="Screenshots/The Forge - Colour Black Landscape.png" width="108" height="46" />
 
-The Forge is a cross-platform rendering framework supporting
+The Forge Framework (TM) is a cross-platform programming framework supporting the following platforms:
 - Windows 10/11 
-    * with DirectX 12 / Vulkan 1.1
-    * with DXR / RTX Ray Tracing API
+    * with DirectX 12 
+    * with DXR 
     * DirectX 11 fallback for older Windows platforms
 * Steam Deck
     * with Vulkan 1.1
     * with VK_KHR_ray_query Ray Tracing API
 - Android Pie or higher
   * with Vulkan 1.1
-  * OpenGL ES 2.0 fallback for large scale business application frameworks
 * Apple
     * iOS 14.1 / 17.0
     * iPad OS 14.1 / 17.0
@@ -21,16 +20,31 @@ The Forge is a cross-platform rendering framework supporting
 - PS5 *
 - Switch using Vulkan 1.1 *
 
-*(only available for accredited developers on request)
+*(the console platforms are only available for accredited developers on request. Please note that you need a license from us to use the console platforms.)
+
+The Forge Framework (TM) (TF) provides building blocks to 
+- extend 
+   * Existing game engines so that they support more platforms (Starfield ...)
+   * Old games (e.g. 20+ years) can be brought back to modern gaming platforms
+   * … and/or write custom game engines from scratch (most notable Supergiant Hades, Hypixel Game Engine)
+- write SDKs (Adreno SDK, Oculus / Qualcomm VR SDKs, Dolby AR SDK, Dolby Vision etc.), enable new technology (Google Stadia, Dolby Vision, Meta App framework etc.)
+- Supports most of the gaming platforms
+As such it is a core part of our service business.
+
+We offer many platforms (PC, macOS / iOS, Android, Steamdeck, Quest) under the Apacke License Version 2.0 here on Github. 
+We offer a commercial license for game consoles (Playstation, XBOX, and Switch). 
 
 
-Particularly, the graphics layer of The Forge supports cross-platform
-- Descriptor management. A description is on this [Wikipage](https://github.com/ConfettiFX/The-Forge/wiki/Descriptor-Management)
-- Multi-threaded and asynchronous resource loading
-- Shader reflection
-- Multi-threaded command buffer generation
+Here is an overview:
+![The Forge Overview](Screenshots/TheForgeOverview.png) 
 
-The Forge is used to provide the rendering layer for custom next-gen game engines. It is also used to provide building blocks to write your own game engine. It is like a "lego" set that allows you to use pieces to build a game engine quickly. The "lego" High-Level Features supported on all platforms are at the moment:
+- Game Layer (partially provided)
+- App
+- Renderer / Scene (not provided) / Resource Streaming (not provided) / Resource Loading / Animation
+- Graphics / OS / Utilities
+What is not there: Physics / Networking / Sound
+
+The "lego" High-Level Features supported on all platforms are at the moment:
 - Resource Loader capable to load textures, buffers and geometry data asynchronously
 - [Lua Scripting System](https://www.lua.org/) - currently used for automatic testing and in 06_Playground to load models and textures and animate the camera and in several other unit tests to cycle through the options they offer during automatic testing.
 - Animation System based on [Ozz Animation System](https://github.com/guillaumeblanc/ozz-animation)
@@ -38,12 +52,12 @@ The Forge is used to provide the rendering layer for custom next-gen game engine
 - Consistent Memory Managament: 
   * on GPU following [Vulkan Memory Allocator](https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator) and the [D3D12 Memory Allocator](https://github.com/GPUOpen-LibrariesAndSDKs/D3D12MemoryAllocator)
   * on CPU [Fluid Studios Memory Manager](http://www.paulnettle.com/)
-- Input system with Gestures for Touch devices based on an extended version of [gainput](https://github.com/jkuhlmann/gainput)
+- Custom Input system library with Gestures for Touch devices written in C
 - Fast Entity Component System based on [flecs](https://github.com/SanderMertens/flecs) 
 - Cross-platform FileSystem C API, supporting disk-based files, memory streams, and files in zip archives
 - UI system based on [Dear imGui](https://github.com/ocornut/imgui) extended for touch input devices
 - Shader Translator using a superset of HLSL as the shader language, called The Forge Shading Language. There is a Wiki page on [The Forge Shading Language](https://github.com/ConfettiFX/The-Forge/wiki/The-Forge-Shading-Language-(FSL))
-- Various implementations of high-end Graphics Effects as shown in the unit tests below
+- Various implementations of high-end Graphics Effects and game engine sub-systems as shown in the unit tests below
 
 Please find a link and credits for all open-source packages used at the end of this readme.
 
@@ -68,11 +82,61 @@ The Forge Interactive Inc. is a [Khronos member](https://www.khronos.org/members
 
 # News
 
-## Release 1.58 - June 17th, 2024 Behemoth | Compute-Driven Mega Particle System | Triangle Visibility Buffer 2.0 | 
+## Release 1.60 - October 11th, 2024 - GPU Work Graphs | Filesystem Refactor | Window System Refactor Phase 1 
+
+### GPU Work Graphs
+We are testing GPU Work Graphs now for a while. We see opportunities to implement more complex compute driven interactions, which helps us to move towards GPU-driven rendering more and more. The current example runs the clear buffers and triangle culling in a GPU Work Graph if GPU Work Graphs are supported. Otherwise it takes the old path. So visually there is no change.
+
+### Filesystem Refactor
+We data drive the everything in a game engine. For the file system, we finally managed to implement that too in the public repository. We also removed unnecessary copies and symlinks. Please note our file system consists of "two" file systems. One for the run-time and one for tools. You can't ship a tools file system in a game :-) I know that this is well known but people always want to check if a path is right, a directory exists, a file exists, before they load this one file ... yeaahh ... so our run-time file system prevents that from happening.
+
+### Window System Refactor Phase 1
+With the on-going challenges in the area of upscaling and general window management on Operating systems that support windows, we decided to refactor our window system to bring it up to existing standards and allow us to integrate upscalers easier. Currently most upscalers do not consider the pixel center, they were written by people who never studied Bresenham's algorithm. We wanted to make sure our upscaler actually works without introducing Moire patterns or strong staircase effects like the ones currently promoted by hardware vendors.
+We will add more functionality in Phase 2 ... 
+
+### Steamdeck 
+We are pushing forward in making Steamdeck a first class citizen. It represents our Linux run-time efforts, so we can switch if its necessary to any Linux distro ... 
+
+
+
+## Release 1.59 - September 6th, 2024 - STAR WARS™: Bounty Hunter™ | Replaced Gainput with our own Input library | Removed Vulkan from Windows Run-Time | Removed API Switch | Third-Party Integration
+
+STAR WARS™: Bounty Hunter™
+Bounty Hunter was ported with the help of The Forge Framework to all the platforms mentioned in the screenshot:
+[![STAR WARS™: Bounty Hunter™](Screenshots/StarWars.png)](https://www.youtube.com/watch?v=jiBmgse9GTc)
+
+### Replaced Gainput with our own Input library
+We wrote a new input library from scratch in C. Its design follows the architecture of the rendering API. So one high-level interface file IInput.h and then platform specific files for each of the target devices. It has less lines of code compared to gainput and is easier to maintain for a small team. We are still testing it as we speak. Let us know if you see any bugs.
+
+### Removed Vulkan from Windows Run-time
+Over the last couple of years in many of our projects, it became apparent that the best option to ship a PC / Windows game is DirectX 12. The main reason is the reduced QA effort and reliability. The other reason is that we constantly get forced to upgrade on PC to a newer version, while mobile -which is the more important platform- stays far behind. So we are not officially supporting the Vulkan run-time on Windows anymore. We have an internal version that we test and obviously we support Vulkan on Android, Switch and Steamdeck (native support).
+
+### Removed API Switch from the Run-time
+Concluding that Vulkan is not a good API for PC anymore, we removed the switching functionality we had in there before to switch between DirectX 12 and Vulkan on PC and OpenGL ES 2.0 and Vulkan on Android.
+For Android we utilized the switching functionality to switch between OpenGL ES 2.0 and Vulkan for a business class application that we helped to build (Facebook Application framework). This was necessary to run on billions of mobile devices. Looking at the latest numbers it doesn't make sense for us to support OpenGL ES 2.0 and therefore we dropped support and also don't need switching anymore.
+
+### Removed Commercial Middleware from GitHub
+We decided to remove our commercial middleware from GitHub. Development will now happen in our internal repositories only.
+
+### Commercial Console licenses
+For the last seven years we offered TF for free to anyone asking. We are going to change this now for the console platforms XBOX, Playstation and Switch. You will require a commercial license to use those from here on.
+
+### Removed unit tests
+- 09a_HybridRaytracing
+
+### Third-Party Libraries
+We are improving our Third-Party Library integration substantially by making the ones we use more integrated into The Forge Eco System. While doing so we removed the ones we do not use anymore. Here is a list:
+- soloud
+- rmem
+- cjson
+- MTuner
+- TinyXML
+
+
+## Release 1.58 - June 17th, 2024 Behemoth | Compute-Driven Mega Particle System | Triangle Visibility Buffer 2.0 Update
 
 ### Announce trailer for Behemoth
 We helped Skydance Interactive to optimize Behemoth last year. Click on the image below to see the announce trailer:
-
 
 [![Behemoth Trailer from June 2024](Screenshots/Behemoth/Behemoth.png)](https://youtu.be/hTmjjzwSp-E?si=rj0G6yrqv5Cr6Gn9)
 
@@ -87,15 +151,15 @@ http://www.conffx.com/WolfgangEngelParticleSystem.pptx
 It is meant to be used to implement next-gen Mega Particle systems in which we simulate always 100000th or millions of particles at once instead of the few dozen ones contemporary systems simulate. 
 
 #### Android Samsung S22 1170x540 resolution
-This screenshot shows 4 million firefly-like particles, with 10000 lights attached to them and a shadow for the directional light. Those numbers were thought to be not possible on mobile phones before.
+This screenshot shows 4 million firefly-like particles, with 10000 lights attached to them and 8 shadows. Those numbers were thought to be not possible on mobile phones before.
 ![Mega Particle System Android Samsung S22](Screenshots/Particle%20System/AndroidS22_1170x540.png) 
 
 #### Android Samsung S23 1170x540 resolution
-Same setting as above but this time also with 8 Shadows from Point Lights additionally.
+Same setting as above.
 ![Mega Particle System Android Samsung S23](Screenshots/Particle%20System/Android_S23_1170x540.png)
 
 #### Android Samsung S24 1170x540 resolution
-Same setting as above but this time also with 8 Shadows from Point Lights additionally.
+Same setting as above. 
 ![Mega Particle System Android Samsung S24](Screenshots/Particle%20System/Android_S24_1170x540.png) 
 
 #### PS5 running at 4K
@@ -119,7 +183,7 @@ http://www.conffx.com/I3D-VisibilityBuffer2.pptx
 
 We are giving a talk about our latest Visibility Buffer research on I3D. Here is a short primer what it is about:
 
-The original idea of the Triangle Visibility Buffer is based on an article by [[burns2013]. [schied15] and [schied16] extended what was described in the original article. Christoph Schied implemented a modern version with an early version of OpenGL (supporting MultiDrawIndirect) into The Forge rendering framework in September 2015. 
+The original idea of the Triangle Visibility Buffer is based on an article by [[burns2013]. [schied15] and [schied16] extended what was described in the original article. Christoph Schied implemented a modern version with an early version of OpenGL (supporting MultiDrawIndirect) into The Forge Framework in September 2015. 
 We ported this code to all platforms and simplified and extended it in the following years by adding a triangle filtering stage following [chajdas] and [wihlidal17] and a new way of shading.
 Our on-going improvements simplified the approach incrementally and the architecture started to resemble what was described in the original article by [burns2013] again, leveraging the modern tools of the newer graphics APIs. 
 In contrast to [burns2013], the actual storage of triangles in our implementation of a Visibility Buffer happens due to the triangle removal and draw compaction step with an optimal “massaged” data set.
@@ -1111,16 +1175,6 @@ It works as follows:
 ![Remote UI Control](Screenshots/Remote%20UI.jpg)
 
 
-## MTuner
-MTuner
-MTuner was integrated into the Windows 10 runtime of The Forge following a request for more in-depth memory profiling capabilities by one of the developers we support. It has been adapted to work closely with our framework and its existing memory tracking capabilities to provide a complete picture of a given application’s memory usage. 
-
-To use The Forge’s MTuner functionality, simply drag and drop the .MTuner file generated alongside your application’s executable into the MTuner host app, and you can immediately begin analyzing your program’s memory usage. The intuitive interface and exhaustive supply of allocation info contained in a single capture file makes it easy to identify usage patterns and hotspots, as well as tracking memory leaks down to the file and line number. The full documentation of MTuner can be found [here](link: https://milostosic.github.io/MTuner/).
-
-Currently, this feature is only available on Windows 10, but support for additional platforms provided by The Forge is forthcoming.
-Here is a screenshot of an example capture done on our first Unit Test, 01_Transformations:
-![MTuner](Screenshots/MTuner.png) 
-
 ## Ray Tracing Benchmark
 Based on request we are providing a Ray Tracing Benchmark in 16_RayTracing. It allows you to compare the performance of three platforms: 
   * Windows with DirectX 12 DXR
@@ -1423,6 +1477,10 @@ The Forge Interactive Inc. will prepare releases when all the platforms are stab
 # Products
 We would appreciate it if you could send us a link in case your product uses The Forge. Here are the ones we received so far or we contributed to:
 
+## STAR WARS™: Bounty Hunter™
+Bounty Hunter was ported with the help of The Forge Framework to all the platforms mentioned in the screenshot:
+[![STAR WARS™: Bounty Hunter™](Screenshots/StarWars.png)](https://www.youtube.com/watch?v=jiBmgse9GTc)
+
 ## BuildBox
 The game engine BuildBox is now using The Forge (click on image to go to the Steam Store): 
 
@@ -1481,7 +1539,7 @@ alt="StarVR" width="300" height="159" border="0" /></a>
 
 
 ## Torque 3D
-The Forge will be used as the rendering framework in Torque 3D:
+The Forge Framework will be used as the rendering framework in Torque 3D:
 
 <a href="http://www.garagegames.com/products/torque-3d" target="_blank"><img src="Screenshots/Torque-Logo_H.png" 
 alt="Torque 3D" width="417" height="106" border="0" /></a>
@@ -1520,13 +1578,11 @@ The Forge utilizes the following Open-Source libraries:
 * [WinPixEventRuntime](https://blogs.msdn.microsoft.com/pix/winpixeventruntime/)
 * [Fluid Studios Memory Manager](http://www.paulnettle.com/)
 * [volk Metaloader for Vulkan](https://github.com/zeux/volk)
-* [gainput](https://github.com/jkuhlmann/gainput)
 * [Dear ImGui](https://github.com/ocornut/imgui)
 * [DirectX Shader Compiler](https://github.com/Microsoft/DirectXShaderCompiler)
 * [Ozz Animation System](https://github.com/guillaumeblanc/ozz-animation)
 * [Lua Scripting System](https://www.lua.org/)
 * [TressFX](https://github.com/GPUOpen-Effects/TressFX)
-* [MTuner](https://github.com/milostosic/MTuner) 
 * [meshoptimizer](https://github.com/zeux/meshoptimizer)
 * [TinyImageFormat](https://github.com/DeanoC/tiny_imageformat)
 * [flecs](https://github.com/SanderMertens/flecs)
@@ -1534,3 +1590,7 @@ The Forge utilizes the following Open-Source libraries:
 * [HIDAPI](https://github.com/libusb/hidapi)
 * [bstrlib](https://github.com/websnarf/bstrlib)
 * [cr](https://github.com/fungos/cr)
+
+
+
+
