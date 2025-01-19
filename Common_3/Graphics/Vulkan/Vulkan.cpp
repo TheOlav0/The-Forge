@@ -899,12 +899,6 @@ struct DynamicUniformData
 /************************************************************************/
 // Descriptor Set Structure
 /************************************************************************/
-typedef struct DescriptorIndexMap
-{
-    char*    key;
-    uint32_t value;
-} DescriptorIndexMap;
-
 static const DescriptorInfo* get_descriptor(const RootSignature* pRootSignature, const char* pResName)
 {
     const DescriptorIndexMap* pNode = shgetp_null(pRootSignature->pDescriptorNameToIndexMap, pResName);

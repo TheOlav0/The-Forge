@@ -331,12 +331,6 @@ typedef struct DescriptorHeap
     uint32_t                    mUsedDescriptors;
 } DescriptorHeap;
 
-typedef struct DescriptorIndexMap
-{
-    char*    key;
-    uint32_t value;
-} DescriptorIndexMap;
-
 char* processErrorMessages(IDxcBlobEncoding* pEncoding)
 {
     int32_t       percentCharactersCount = 0;
@@ -2443,7 +2437,7 @@ static bool AddDevice(const RendererDesc* pDesc, Renderer* pRenderer)
 
         if (pRenderer->mDx.mUseDebugCallback)
         {
-            pRenderer->mDx.pDebugValidation->SetMuteDebugOutput(true);
+            pRenderer->mDx.pDebugValidation->SetMuteDebugOutput(false);
             // D3D12_MESSAGE_CALLBACK_IGNORE_FILTERS, will enable all message filtering in the callback function, no need to use Push/Pop,
             // but we stick with FLAG_NONE for failsafe
             HRESULT res = pRenderer->mDx.pDebugValidation->RegisterMessageCallback(DebugMessageCallback, D3D12_MESSAGE_CALLBACK_FLAG_NONE,

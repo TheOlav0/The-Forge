@@ -653,6 +653,11 @@ _DECL_FLOAT_TYPES(_DECL_CompareTex2DProj)
 // inline void Write2D(RWTexture2D<float4> tex, int2 p, float4 val)
 // { tex[p] = val; }
 
+#define _DECL_Write1D(TYPE) \
+inline void Write1D(RWTexture1D<TYPE> tex, int p, TYPE val) \
+{ tex[p] = val; }
+_DECL_TYPES(_DECL_Write1D)
+
 #define _DECL_Write2D(TYPE) \
 inline void Write2D(RWTexture2D<TYPE> tex, int2 p, TYPE val) \
 { tex[p] = val; }

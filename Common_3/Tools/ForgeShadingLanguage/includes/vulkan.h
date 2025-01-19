@@ -263,6 +263,7 @@ ivec4 _LoadTex1D(itexture1D TEX, sampler SMP, int P, int lod) { return texelFetc
 uvec4 _LoadTex2D(utexture2D TEX, sampler SMP, ivec2 P, int lod) { return texelFetch(usampler2D(TEX, SMP), P, lod); }
 ivec4 _LoadTex2D(itexture2D TEX, sampler SMP, ivec2 P, int lod) { return texelFetch(isampler2D(TEX, SMP), P, lod); }
 
+#define LoadRWTex1D(TEX, P) imageLoad(TEX, int(P)).x
 #define LoadRWTex2D(TEX, P) imageLoad(TEX, ivec2(P))
 #define LoadRWTex3D(TEX, P) imageLoad(TEX, ivec3(P))
 
@@ -405,6 +406,7 @@ ivec4 _to4(in(ivec3) x)  { return ivec4(x, 0); }
 ivec4 _to4(in(ivec2) x)  { return ivec4(x, 0, 0); }
 ivec4 _to4(in(int)   x)  { return ivec4(x, 0, 0, 0); }
 
+#define Write1D(TEX, P, V) imageStore(TEX, int(P), _to4(V))
 #define Write2D(TEX, P, V) imageStore(TEX, ivec2((P).xy),  _to4(V))
 #define Write3D(TEX, P, V) imageStore(TEX, ivec3((P.xyz)), _to4(V))
 #define Write2DArray(TEX, P, I, V) imageStore(TEX, ivec3(P, I), _to4(V))
@@ -726,6 +728,8 @@ vec4 saturate(vec4 VALUE) { return clamp(VALUE, 0.0f, 1.0f); }
 #define asuint(X)			floatBitsToUint(X)
 #define asfloat(X)			uintBitsToFloat(X)
 #define mad(a, b, c)		(a) * (b) + (c)
+#define one_over_log10      (1.0f / log(10))
+#define log10(x)            (log(x) * one_over_log10) 
 
 // case list
 #define REPEAT_TEN(base) CASE(base) CASE(base+1) CASE(base+2) CASE(base+3) CASE(base+4) CASE(base+5) CASE(base+6) CASE(base+7) CASE(base+8) CASE(base+9)

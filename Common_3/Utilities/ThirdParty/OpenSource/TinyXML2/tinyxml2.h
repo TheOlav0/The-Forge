@@ -30,9 +30,9 @@ distribution.
 #include <cstring>
 #include <cstdarg>
 
-#include "Common_3/Utilities/Interfaces/IFileSystem.h"
+#include "../../../../../Common_3/Utilities/Interfaces/IFileSystem.h"
 #define IMEMORY_FROM_HEADER
-#include "Common_3/Utilities/Interfaces/IMemory.h" //NOTE: this should be the last include in a .cpp
+#include "../../../../../Common_3/Utilities/Interfaces/IMemory.h" //NOTE: this should be the last include in a .cpp
 
 /* 
    TODO: intern strings instead of allocation.
@@ -1012,7 +1012,7 @@ public:
         to do read and write. If filesys is NULL,
         default filesystem will be used.
 	*/	
-	int LoadFile( const Path* filePath );
+	int LoadFile(ResourceDirectory rd, const char* fileName);
 
     /**
 		Load an XML file from data in, specify size
@@ -1037,7 +1037,7 @@ public:
         to do read and write. If filesys is NULL,
         default filesystem will be used.
 	*/
-	int SaveFile( const Path* filePath );
+	int SaveFile(ResourceDirectory rd, const char* fileName);
 
 	/**
 		Save the XML file to disk. You are responsible

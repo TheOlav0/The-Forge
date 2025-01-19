@@ -1960,6 +1960,7 @@ struct InputSystemImpl: public gainput::InputListener
                         {
                             ctx.pUserData = mGlobalAnyButtonAction.pUserData;
                             mGlobalAnyButtonAction.pFunction(&ctx);
+                            ctx.pUserData = pDesc->pUserData;
                         }
 #if TOUCH_INPUT
                         IControlSet val = { control };
@@ -1972,6 +1973,7 @@ struct InputSystemImpl: public gainput::InputListener
                         {
                             ctx.pUserData = mGlobalAnyButtonAction.pUserData;
                             mGlobalAnyButtonAction.pFunction(&ctx);
+                            ctx.pUserData = pDesc->pUserData;
                         }
 #endif
                     }
@@ -1984,6 +1986,7 @@ struct InputSystemImpl: public gainput::InputListener
                         {
                             ctx.pUserData = mGlobalAnyButtonAction.pUserData;
                             mGlobalAnyButtonAction.pFunction(&ctx);
+                            ctx.pUserData = pDesc->pUserData;
                         }
                     }
                     break;
@@ -2095,6 +2098,7 @@ struct InputSystemImpl: public gainput::InputListener
                                 {
                                     ctx.pUserData = mGlobalAnyButtonAction.pUserData;
                                     mGlobalAnyButtonAction.pFunction(&ctx);
+                                    ctx.pUserData = pDesc->pUserData;
                                 }
                             }
                         }
@@ -2119,6 +2123,7 @@ struct InputSystemImpl: public gainput::InputListener
                                 {
                                     ctx.pUserData = mGlobalAnyButtonAction.pUserData;
                                     mGlobalAnyButtonAction.pFunction(&ctx);
+                                    ctx.pUserData = pDesc->pUserData;
                                 }
                             }
                         }
@@ -2507,6 +2512,7 @@ struct InputSystemImpl: public gainput::InputListener
                                 {
                                     ctx.pUserData = mGlobalAnyButtonAction.pUserData;
                                     mGlobalAnyButtonAction.pFunction(&ctx);
+                                    ctx.pUserData = pDesc->pUserData;
                                 }
                             }
 
@@ -2527,6 +2533,7 @@ struct InputSystemImpl: public gainput::InputListener
                             {
                                 ctx.pUserData = mGlobalAnyButtonAction.pUserData;
                                 mGlobalAnyButtonAction.pFunction(&ctx);
+                                ctx.pUserData = pDesc->pUserData;
                             }
                         }
                     }
@@ -2545,6 +2552,7 @@ struct InputSystemImpl: public gainput::InputListener
                             {
                                 ctx.pUserData = mGlobalAnyButtonAction.pUserData;
                                 mGlobalAnyButtonAction.pFunction(&ctx);
+                                ctx.pUserData = pDesc->pUserData;
                             }
                         }
                     }
@@ -2574,10 +2582,12 @@ struct InputSystemImpl: public gainput::InputListener
                         {
                             if (pDesc->pFunction)
                                 executeNext = pDesc->pFunction(&ctx) && executeNext;
+
                             if (mGlobalAnyButtonAction.pFunction)
                             {
                                 ctx.pUserData = mGlobalAnyButtonAction.pUserData;
                                 mGlobalAnyButtonAction.pFunction(&ctx);
+                                ctx.pUserData = pDesc->pUserData;
                             }
                         }
                     }

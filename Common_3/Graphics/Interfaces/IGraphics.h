@@ -1582,6 +1582,12 @@ typedef struct RootSignatureDesc
     RootSignatureFlags mFlags;
 } RootSignatureDesc;
 
+typedef struct DescriptorIndexMap
+{
+    char* key;
+    uint32_t value;
+} DescriptorIndexMap;
+
 typedef struct DEFINE_ALIGNED(RootSignature, 64)
 {
     /// Number of descriptors declared in the root signature layout

@@ -510,12 +510,6 @@ static const uint32_t gRootDescriptorDWORDS = 2;
 
 static uint32_t gMaxRootConstantsPerRootParam = 4U;
 
-typedef struct DescriptorIndexMap
-{
-    char*    key;
-    uint32_t value;
-} DescriptorIndexMap;
-
 /************************************************************************/
 // Logging functions
 /************************************************************************/

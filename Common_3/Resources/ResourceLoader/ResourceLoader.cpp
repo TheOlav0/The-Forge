@@ -57,9 +57,6 @@
 #include "../../Utilities/ThirdParty/OpenSource/murmurhash3/MurmurHash3_32.h"
 #endif
 
-#define CGLTF_IMPLEMENTATION
-#include "ThirdParty/OpenSource/cgltf/cgltf.h"
-
 #include "../../Tools/ReloadServer/ReloadClient.h"
 
 // If facing strange gfx issues, corruption, GPU hangs, enable this for verbose logging of resource loading
@@ -674,13 +671,6 @@ typedef enum UpdateRequestType
     UPDATE_REQUEST_COPY_TEXTURE,
     UPDATE_REQUEST_INVALID,
 } UpdateRequestType;
-
-typedef enum UploadFunctionResult
-{
-    UPLOAD_FUNCTION_RESULT_COMPLETED,
-    UPLOAD_FUNCTION_RESULT_STAGING_BUFFER_FULL,
-    UPLOAD_FUNCTION_RESULT_INVALID_REQUEST
-} UploadFunctionResult;
 
 struct UpdateRequest
 {
@@ -1547,11 +1537,10 @@ static UploadFunctionResult loadTexture(Renderer* pRenderer, CopyEngine* pCopyEn
     return UPLOAD_FUNCTION_RESULT_INVALID_REQUEST;
 }
 
-static void fillGeometryUpdateDesc(Renderer* pRenderer, CopyEngine* pCopyEngine, GeometryLoadDesc* pDesc, Geometry* geom,
+static void fillGeometryUpdateDesc(Renderer* pRenderer, GeometryLoadDesc* pDesc, Geometry* geom,
                                    uint32_t* indexStride, BufferUpdateDesc vertexUpdateDesc[MAX_VERTEX_BINDINGS],
                                    BufferUpdateDesc indexUpdateDesc[1])
 {
-    UNREF_PARAM(pCopyEngine);
     bool     structuredBuffers = (pDesc->mFlags & GEOMETRY_LOAD_FLAG_STRUCTURED_BUFFERS) > 0;
     uint32_t indexBufferSize = *indexStride * geom->mIndexCount;
 
@@ -1660,7 +1649,7 @@ static void fillGeometryUpdateDesc(Renderer* pRenderer, CopyEngine* pCopyEngine,
     geom->mVertexBufferCount = bufferCounter;
 }
 
-static UploadFunctionResult loadGeometryCustomMeshFormat(Renderer* pRenderer, CopyEngine* pCopyEngine, GeometryLoadDesc* pDesc,
+static UploadFunctionResult loadGeometryCustomMeshFormat(Renderer* pRenderer, GeometryLoadDesc* pDesc,
                                                          BufferUpdateDesc vertexUpdateDesc[MAX_VERTEX_BINDINGS],
                                                          BufferUpdateDesc indexUpdateDesc[1])
 {
@@ -1678,7 +1667,7 @@ static UploadFunctionResult loadGeometryCustomMeshFormat(Renderer* pRenderer, Co
 
     if (strncmp(magic, GEOMETRY_FILE_MAGIC_STR, TF_ARRAY_COUNT(magic)) != 0)
     {
-        LOGF(eERROR, "File '%s' is not a Geometry file.", pDesc->pFileName);
+        LOGF(eWARNING, "File '%s' is not a Geometry file.", pDesc->pFileName);
         return UPLOAD_FUNCTION_RESULT_INVALID_REQUEST;
     }
 
@@ -1834,7 +1823,7 @@ static UploadFunctionResult loadGeometryCustomMeshFormat(Renderer* pRenderer, Co
 
     uint32_t dstIndexStride = indexStride;
 
-    fillGeometryUpdateDesc(pRenderer, pCopyEngine, pDesc, geom, &dstIndexStride, vertexUpdateDesc, indexUpdateDesc);
+    fillGeometryUpdateDesc(pRenderer, pDesc, geom, &dstIndexStride, vertexUpdateDesc, indexUpdateDesc);
 
     if (indexStride == dstIndexStride)
         memcpy(indexUpdateDesc->pMappedData, geomData->pShadow->pIndices, indexStride * geom->mIndexCount);
@@ -1909,8 +1898,6 @@ static UploadFunctionResult loadGeometryCustomMeshFormat(Renderer* pRenderer, Co
         tf_free(geomData);
     }
 
-    tf_free((void*)pDesc->pVertexLayout);
-
     return UPLOAD_FUNCTION_RESULT_COMPLETED;
 }
 
@@ -1921,7 +1908,18 @@ static UploadFunctionResult loadGeometry(Renderer* pRenderer, CopyEngine* pCopyE
     BufferUpdateDesc indexUpdateDesc = {};
     BufferUpdateDesc vertexUpdateDesc[MAX_VERTEX_BINDINGS] = {};
 
-    UploadFunctionResult res = loadGeometryCustomMeshFormat(pRenderer, pCopyEngine, pDesc, vertexUpdateDesc, &indexUpdateDesc);
+    UploadFunctionResult res = UPLOAD_FUNCTION_RESULT_INVALID_REQUEST;
+    if (pDesc->pLoadFunction)
+    {
+        res = pDesc->pLoadFunction(pRenderer, pDesc, vertexUpdateDesc, &indexUpdateDesc);
+    }
+    else
+    {
+        res = loadGeometryCustomMeshFormat(pRenderer, pDesc, vertexUpdateDesc, &indexUpdateDesc);
+    }
+
+    tf_free((void*)pDesc->pVertexLayout);
+
     if (res != UPLOAD_FUNCTION_RESULT_COMPLETED)
         return res;
 

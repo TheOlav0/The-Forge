@@ -312,6 +312,19 @@ typedef struct GeometryBufferLayoutDesc
     uint32_t  mSemanticBindings[SEMANTIC_TEXCOORD9 + 1];
 } GeometryBufferLayoutDesc;
 
+typedef enum UploadFunctionResult
+{
+    UPLOAD_FUNCTION_RESULT_COMPLETED,
+    UPLOAD_FUNCTION_RESULT_STAGING_BUFFER_FULL,
+    UPLOAD_FUNCTION_RESULT_INVALID_REQUEST
+} UploadFunctionResult;
+
+struct GeometryLoadDesc;
+struct BufferUpdateDesc;
+typedef UploadFunctionResult (*GeomLoadFunc)(Renderer* pRenderer, GeometryLoadDesc* pDesc,
+    BufferUpdateDesc vertexUpdateDesc[MAX_VERTEX_BINDINGS],
+    BufferUpdateDesc indexUpdateDesc[1]);
+
 typedef struct GeometryLoadDesc
 {
     /// Output geometry
@@ -334,6 +347,11 @@ typedef struct GeometryLoadDesc
 
     /// Used to convert data to desired state inside GeometryBuffer.
     GeometryBufferLayoutDesc* pGeometryBufferLayoutDesc;
+
+    /// Function used to load the geometry
+    /// Defaults to TF-Custom Format
+    GeomLoadFunc pLoadFunction;
+
 } GeometryLoadDesc;
 
 typedef struct BufferUpdateDesc

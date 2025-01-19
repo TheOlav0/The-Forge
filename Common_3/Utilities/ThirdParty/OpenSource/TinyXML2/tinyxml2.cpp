@@ -28,8 +28,8 @@ distribution.
 #include <new>
 #include <cstddef>
 
-#include "Common_3/Utilities/Interfaces/IFileSystem.h"
-#include "Common_3/Utilities/Interfaces/IMemory.h" //NOTE: this should be the last include in a .cpp
+#include "../../../../../Common_3/Utilities/Interfaces/IFileSystem.h"
+#include "../../../../../Common_3/Utilities/Interfaces/IMemory.h" //NOTE: this should be the last include in a .cpp
 
 namespace tinyxml2
 {
@@ -98,14 +98,14 @@ void StrPair::Reset()
 }
 
 
-void StrPair::SetStr( const char* str, int flags )
+void StrPair::SetStr( const char* str, int _flags )
 {
 	Reset();
 	size_t len = strlen( str );
 	start = (char*)tf_calloc(len+1, sizeof(char));
 	memcpy( start, str, len+1 );
 	end = start + len;
-	this->flags = flags | NEEDS_DELETE;
+	this->flags = _flags | NEEDS_DELETE;
 }
 
 
@@ -113,14 +113,14 @@ char* StrPair::ParseText( char* p, const char* endTag, int strFlags )
 {
 	TIXMLASSERT( endTag && *endTag );
 
-	char* start = p;	// fixme: hides a member
+	char* _start = p;	// fixme: hides a member
 	char  endChar = *endTag;
 	size_t length = strlen( endTag );
 
 	// Inner loop of text parsing.
 	while ( *p ) {
 		if ( *p == endChar && strncmp( p, endTag, length ) == 0 ) {
-			Set( start, p, strFlags );
+			Set(_start, p, strFlags );
 			return p + length;
 		}
 		++p;
@@ -131,9 +131,9 @@ char* StrPair::ParseText( char* p, const char* endTag, int strFlags )
 
 char* StrPair::ParseName( char* p )
 {
-	char* start = p;
+	char* _start = p;
 
-	if ( !start || !(*start) ) {
+	if ( !_start || !(*_start) ) {
 		return 0;
 	}
 
@@ -151,8 +151,8 @@ char* StrPair::ParseName( char* p )
 		++p;
 	}
 
-	if ( p > start ) {
-		Set( start, p, 0 );
+	if ( p > _start) {
+		Set(_start, p, 0 );
 		return p;
 	}
 	return 0;
@@ -204,7 +204,7 @@ const char* StrPair::GetStr()
 						char buf[10] = { 0 };
 						int len;
 						p = const_cast<char*>( XMLUtil::GetCharacterRef( p, buf, &len ) );
-						for( int i=0; i<len; ++i ) {
+						for( i=0; i<len; ++i ) {
 							*q++ = buf[i];
 						}
 						TIXMLASSERT( q <= p );
@@ -596,12 +596,12 @@ XMLNode* XMLNode::InsertAfterChild( XMLNode* afterThis, XMLNode* addThis )
 
 
 
-const XMLElement* XMLNode::FirstChildElement( const char* value ) const
+const XMLElement* XMLNode::FirstChildElement( const char* _value ) const
 {
 	for( XMLNode* node=firstChild; node; node=node->next ) {
 		XMLElement* element = node->ToElement();
 		if ( element ) {
-			if ( !value || XMLUtil::StringEqual( element->Name(), value ) ) {
+			if ( !_value || XMLUtil::StringEqual( element->Name(), _value) ) {
 				return element;
 			}
 		}
@@ -610,12 +610,12 @@ const XMLElement* XMLNode::FirstChildElement( const char* value ) const
 }
 
 
-const XMLElement* XMLNode::LastChildElement( const char* value ) const
+const XMLElement* XMLNode::LastChildElement( const char* _value) const
 {
 	for( XMLNode* node=lastChild; node; node=node->prev ) {
 		XMLElement* element = node->ToElement();
 		if ( element ) {
-			if ( !value || XMLUtil::StringEqual( element->Name(), value ) ) {
+			if ( !_value || XMLUtil::StringEqual( element->Name(), _value) ) {
 				return element;
 			}
 		}
@@ -624,11 +624,11 @@ const XMLElement* XMLNode::LastChildElement( const char* value ) const
 }
 
 
-const XMLElement* XMLNode::NextSiblingElement( const char* value ) const
+const XMLElement* XMLNode::NextSiblingElement( const char* _value) const
 {
 	for( XMLNode* element=this->next; element; element = element->next ) {
 		if (    element->ToElement() 
-			 && (!value || XMLUtil::StringEqual( value, element->Value() ))) 
+			 && (!_value || XMLUtil::StringEqual(_value, element->Value() )))
 		{
 			return element->ToElement();
 		}
@@ -637,11 +637,11 @@ const XMLElement* XMLNode::NextSiblingElement( const char* value ) const
 }
 
 
-const XMLElement* XMLNode::PreviousSiblingElement( const char* value ) const
+const XMLElement* XMLNode::PreviousSiblingElement( const char* _value) const
 {
 	for( XMLNode* element=this->prev; element; element = element->prev ) {
 		if (    element->ToElement()
-			 && (!value || XMLUtil::StringEqual( value, element->Value() ))) 
+			 && (!_value || XMLUtil::StringEqual(_value, element->Value() )))
 		{
 			return element->ToElement();
 		}
@@ -943,50 +943,50 @@ void XMLAttribute::SetName( const char* n )
 }
 
 
-int XMLAttribute::QueryIntValue( int* value ) const
+int XMLAttribute::QueryIntValue( int* _value) const
 {
-	if ( TIXML_SSCANF( Value(), "%d", value ) == 1 )
+	if ( TIXML_SSCANF( Value(), "%d", _value) == 1 )
 		return XML_NO_ERROR;
 	return XML_WRONG_ATTRIBUTE_TYPE;
 }
 
 
-int XMLAttribute::QueryUnsignedValue( unsigned int* value ) const
+int XMLAttribute::QueryUnsignedValue( unsigned int* _value) const
 {
-	if ( TIXML_SSCANF( Value(), "%u", value ) == 1 )
+	if ( TIXML_SSCANF( Value(), "%u", _value) == 1 )
 		return XML_NO_ERROR;
 	return XML_WRONG_ATTRIBUTE_TYPE;
 }
 
 
-int XMLAttribute::QueryBoolValue( bool* value ) const
+int XMLAttribute::QueryBoolValue( bool* _value) const
 {
 	int ival = -1;
 	QueryIntValue( &ival );
 
 	if ( ival > 0 || XMLUtil::StringEqual( Value(), "true" ) ) {
-		*value = true;
+		*_value = true;
 		return XML_NO_ERROR;
 	}
 	else if ( ival == 0 || XMLUtil::StringEqual( Value(), "false" ) ) {
-		*value = false;
+		*_value = false;
 		return XML_NO_ERROR;
 	}
 	return XML_WRONG_ATTRIBUTE_TYPE;
 }
 
 
-int XMLAttribute::QueryDoubleValue( double* value ) const
+int XMLAttribute::QueryDoubleValue( double* _value) const
 {
-	if ( TIXML_SSCANF( Value(), "%lf", value ) == 1 )
+	if ( TIXML_SSCANF( Value(), "%lf", _value) == 1 )
 		return XML_NO_ERROR;
 	return XML_WRONG_ATTRIBUTE_TYPE;
 }
 
 
-int XMLAttribute::QueryFloatValue( float* value ) const
+int XMLAttribute::QueryFloatValue( float* _value) const
 {
-	if ( TIXML_SSCANF( Value(), "%f", value ) == 1 )
+	if ( TIXML_SSCANF( Value(), "%f", _value) == 1 )
 		return XML_NO_ERROR;
 	return XML_WRONG_ATTRIBUTE_TYPE;
 }
@@ -1047,9 +1047,9 @@ XMLElement::XMLElement( XMLDocument* doc ) : XMLNode( doc ),
 XMLElement::~XMLElement()
 {
 	while( rootAttribute ) {
-		XMLAttribute* next = rootAttribute->next;
+		XMLAttribute* _next = rootAttribute->next;
 		DELETE_ATTRIBUTE( rootAttribute );
-		rootAttribute = next;
+		rootAttribute = _next;
 	}
 }
 
@@ -1076,12 +1076,12 @@ const XMLAttribute* XMLElement::FindAttribute( const char* name ) const
 }
 
 
-const char* XMLElement::Attribute( const char* name, const char* value ) const
+const char* XMLElement::Attribute( const char* name, const char* _value ) const
 { 
 	const XMLAttribute* a = FindAttribute( name ); 
 	if ( !a ) 
 		return 0; 
-	if ( !value || XMLUtil::StringEqual( a->Value(), value ))
+	if ( !_value || XMLUtil::StringEqual( a->Value(), _value))
 		return a->Value();
 	return 0;
 }
@@ -1125,11 +1125,11 @@ XMLAttribute* XMLElement::FindOrCreateAttribute( const char* name )
 
 void XMLElement::DeleteAttribute( const char* name )
 {
-	XMLAttribute* prev = 0;
+	XMLAttribute* _prev = 0;
 	for( XMLAttribute* a=rootAttribute; a; a=a->next ) {
 		if ( XMLUtil::StringEqual( name, a->Name() ) ) {
-			if ( prev ) {
-				prev->next = a->next;
+			if (_prev) {
+				_prev->next = a->next;
 			}
 			else {
 				rootAttribute = a->next;
@@ -1137,7 +1137,7 @@ void XMLElement::DeleteAttribute( const char* name )
 			DELETE_ATTRIBUTE( a );
 			break;
 		}
-		prev = a;
+		_prev = a;
 	}
 }
 
@@ -1371,7 +1371,7 @@ XMLUnknown* XMLDocument::NewUnknown( const char* str )
 }
 
 
-int XMLDocument::LoadFile(const Path* filePath)
+int XMLDocument::LoadFile(ResourceDirectory rd, const char* fileName)
 {
 	DeleteChildren();
 	InitDocument();
@@ -1384,24 +1384,24 @@ int XMLDocument::LoadFile(const Path* filePath)
     size_t bytesRead = 0;
     char *data = NULL;
 
-	FileStream* fileStream = fsOpenFile(filePath, FM_READ);
-	if (!fileStream)
+	FileStream fileStream = {};
+	if (!fsOpenStreamFromPath(rd, fileName, FM_READ, &fileStream))
 	{
-		SetError( XML_ERROR_FILE_NOT_FOUND, fsGetPathAsNativeString(filePath), 0 );
+		SetError( XML_ERROR_FILE_NOT_FOUND, fileName, 0 );
 		return errorID;
 	}
-    size_t length = fsGetStreamFileSize(fileStream);
+    size_t length = fsGetStreamFileSize(&fileStream);
 
     data = (char*)tf_calloc(length, sizeof(char));
-	bytesRead = fsReadFromStream(fileStream, data, length);
-	fsCloseStream(fileStream);
+	bytesRead = fsReadFromStream(&fileStream, data, length);
+	fsCloseStream(&fileStream);
 
 
 #if defined(_MSC_VER)
 #pragma warning ( pop )
 #endif
 	if ( data == NULL ) {
-		SetError( XML_ERROR_FILE_NOT_FOUND, fsGetPathAsNativeString(filePath), 0 );
+		SetError( XML_ERROR_FILE_NOT_FOUND, fileName, 0 );
         tf_free(data);
 		return errorID;
 	}else
@@ -1413,19 +1413,19 @@ int XMLDocument::LoadFile(const Path* filePath)
 	return errorID;
 }
 
-int XMLDocument::SaveFile( const Path* filePath )
+int XMLDocument::SaveFile(ResourceDirectory rd, const char* fileName)
 {
 	XMLPrinter printer;
 	Print( &printer );
 
-	FileStream* fs = fsOpenFile(filePath, FM_WRITE);
-	if (!fs)
+	FileStream fs = {};
+	if (!fsOpenStreamFromPath(rd, fileName, FM_WRITE, &fs))
 	{
-		SetError( XML_ERROR_FILE_NOT_FOUND, fsGetPathAsNativeString(filePath), 0 );
+		SetError( XML_ERROR_FILE_NOT_FOUND, fileName, 0 );
 		return errorID;
 	}
-	fsWriteToStream(fs, printer.CStr(), printer.CStrSize() - 1);
-	fsCloseStream(fs);
+	fsWriteToStream(&fs, printer.CStr(), printer.CStrSize() - 1);
+	fsCloseStream(&fs);
 	return errorID;
 }
 
@@ -1561,13 +1561,17 @@ int XMLDocument::Parse( const char* p )
 
 void XMLDocument::Print( XMLPrinter* streamer ) 
 {
-	FileStream* stream = fsCreateStreamFromFILE(stdout);
-	XMLPrinter stdStreamer( stream );
-	if ( !streamer )
-		streamer = &stdStreamer;
-	Accept( streamer );
 	
-	fsCloseStream(stream);
+	FileStream stream = {};
+	if (fsOpenStreamFromPath(RD_LOG, "XML_LOG.txt", FM_WRITE, &stream))
+	{
+		XMLPrinter stdStreamer( &stream );
+		if ( !streamer )
+			streamer = &stdStreamer;
+		Accept( streamer );
+		
+		fsCloseStream(&stream);
+	}
 }
 
 
@@ -1630,40 +1634,43 @@ void XMLPrinter::Print( const char* format, ... )
     va_list     va;
     va_start( va, format );
 
-	if ( fs ) {
-		fsPrintToStreamV(fs, format, va);
-	}
-	else {
-		// This seems brutally complex. Haven't figured out a better
-		// way on windows.
-		#ifdef _MSC_VER
-			int len = -1;
-			int expand = 1000;
-			while ( len < 0 ) {
-				len = vsnprintf_s( accumulator.Mem(), accumulator.Capacity(), _TRUNCATE, format, va );
-				if ( len < 0 ) {
-					expand *= 3/2;
-					accumulator.PushArr( expand );
-				}
+	
+	// This seems brutally complex. Haven't figured out a better
+	// way on windows.
+	#ifdef _MSC_VER
+		int len = -1;
+		int expand = 1000;
+		while ( len < 0 ) {
+			len = vsnprintf_s( accumulator.Mem(), accumulator.Capacity(), _TRUNCATE, format, va );
+			if ( len < 0 ) {
+				expand *= 3/2;
+				accumulator.PushArr( expand );
 			}
-			char* p = buffer.PushArr( len ) - 1;
-			memcpy( p, accumulator.Mem(), len+1 );
-		#else
-			int len = vsnprintf( 0, 0, format, va );
-			// Close out and re-start the va-args
-			va_end( va );
-			va_start( va, format );		
-			char* p = buffer.PushArr( len ) - 1;
-			vsnprintf( p, len+1, format, va );
-		#endif
-	}
+		}
+		char* p = buffer.PushArr( len ) - 1;
+		memcpy( p, accumulator.Mem(), len+1 );
+		if (fs) {
+			fsWriteToStream(fs, p, len);
+		}
+	#else
+		int len = vsnprintf( 0, 0, format, va );
+		// Close out and re-start the va-args
+		va_end( va );
+		va_start( va, format );		
+		char* p = buffer.PushArr( len ) - 1;
+		vsnprintf( p, len+1, format, va );
+		if (fs) {
+			fsWriteToStream(fs, p, len);
+		}
+	#endif
+	
     va_end( va );
 }
 
 
-void XMLPrinter::PrintSpace( int depth )
+void XMLPrinter::PrintSpace( int _depth )
 {
-	for( int i=0; i<depth; ++i ) {
+	for( int i=0; i< _depth; ++i ) {
 		Print( "    " );
 	}
 }
