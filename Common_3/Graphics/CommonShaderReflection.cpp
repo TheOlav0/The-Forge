@@ -127,6 +127,7 @@ void addPipelineReflection(ShaderReflection* pReflection, uint32_t stageCount, P
     uint32_t        pixelStageIndex = UINT32_MAX;
     ShaderResource* pResources = NULL;
     ShaderVariable* pVariables = NULL;
+    ShaderReflection* pSrcVertexInputs = NULL;
 
     ShaderResource** pUniqueResources = NULL;
     ShaderStage*     pShaderUsage = NULL;
@@ -144,9 +145,7 @@ void addPipelineReflection(ShaderReflection* pReflection, uint32_t stageCount, P
         {
             vertexStageIndex = i;
             pOutReflection->mVertexInputsCount = pSrcRef->mVertexInputsCount;
-            ASSERT(pOutReflection->pVertexInputs == NULL);
-            pOutReflection->pVertexInputs = (VertexInput*)tf_malloc(sizeof(VertexInput) * pSrcRef->mVertexInputsCount);
-            memcpy(pOutReflection->pVertexInputs, pSrcRef->pVertexInputs, sizeof(VertexInput) * pSrcRef->mVertexInputsCount);
+            pSrcVertexInputs = pSrcRef;
         }
 #if !defined(METAL)
         else if (pSrcRef->mShaderStage == SHADER_STAGE_HULL)
@@ -245,6 +244,13 @@ void addPipelineReflection(ShaderReflection* pReflection, uint32_t stageCount, P
             pOutReflection->mNamePoolSize += pUniqueVariable[i]->name_size + 1;
         }
     }
+    if (pSrcVertexInputs)
+    {
+        for (uint32_t i = 0; i < pSrcVertexInputs->mVertexInputsCount; ++i)
+        {
+            pOutReflection->mNamePoolSize += pSrcVertexInputs->pVertexInputs[i].name_size + 1;
+        }
+    }
     if (pOutReflection->mNamePoolSize)
     {
         pOutReflection->pNamePool = (char*)tf_calloc(pOutReflection->mNamePoolSize, 1);
@@ -289,6 +295,21 @@ void addPipelineReflection(ShaderReflection* pReflection, uint32_t stageCount, P
                     break;
                 }
             }
+        }
+    }
+
+    if (pSrcVertexInputs)
+    {
+        ASSERT(pOutReflection->pVertexInputs == NULL);
+        pOutReflection->pVertexInputs = (VertexInput*)tf_malloc(sizeof(VertexInput) * pSrcVertexInputs->mVertexInputsCount);
+
+        for (uint32_t i = 0; i < pSrcVertexInputs->mVertexInputsCount; ++i)
+        {
+            pOutReflection->pVertexInputs[i].name = namePool;
+            pOutReflection->pVertexInputs[i].size = pSrcVertexInputs->pVertexInputs[i].size;
+            pOutReflection->pVertexInputs[i].name_size = pSrcVertexInputs->pVertexInputs[i].name_size;
+            strncpy(namePool, pSrcVertexInputs->pVertexInputs[i].name, pSrcVertexInputs->pVertexInputs[i].name_size);
+            namePool += pSrcVertexInputs->pVertexInputs[i].name_size + 1;
         }
     }
 
