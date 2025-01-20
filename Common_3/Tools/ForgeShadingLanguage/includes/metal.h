@@ -342,6 +342,7 @@ void AtomicMaxU64(device uint64_t& DEST, ulong VALUE)
 #define SampleTex2D SampleTex1D
 #define SampleTex3D SampleTex1D
 
+#define LoadRWTex1D(TEX, P) (TEX).read((P))
 #define LoadRWTex2D(TEX, P) (TEX).read(uint2((P).xy))
 #define LoadRWTex3D(TEX, P) (TEX).read(uint3((P).xyz))
 
@@ -513,6 +514,7 @@ int4   _to4(int    x) { return int4(x, 0, 0, 0); }
 #define SampleLvlTex2D(NAME, SAMPLER, COORD, LEVEL) _to4(NAME.sample(SAMPLER, COORD, level(LEVEL)))
 #define SampleTex2DProj(NAME, SAMPLER, COORD) _to4(NAME.sample(SAMPLER, float4(COORD).xy / float4(COORD).w))
 
+#define Write1D(NAME, COORD, VAL) NAME.write(_to4(VAL), COORD)
 #define Write2D(NAME, COORD, VAL) NAME.write(_to4(VAL), uint2(COORD.xy))
 // #define Write3D(NAME, P, VAL) NAME.write(_to4(VAL), uint3((P).xyz))
 // #define Write2DArray(TEX, P, I, VAL) (TEX).write(_to4(VAL), uint2((P).xy), uint(I))
