@@ -158,6 +158,7 @@ struct PipelineReflection
     ShaderResource* pShaderResources;
     ShaderVariable* pVariables;
     char*           pNamePool;
+    VertexInput*    pVertexInputs;
 
     ShaderStage mShaderStages;
     // the individual stages reflection data.

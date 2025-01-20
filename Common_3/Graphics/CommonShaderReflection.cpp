@@ -144,6 +144,9 @@ void addPipelineReflection(ShaderReflection* pReflection, uint32_t stageCount, P
         {
             vertexStageIndex = i;
             pOutReflection->mVertexInputsCount = pSrcRef->mVertexInputsCount;
+            ASSERT(pOutReflection->pVertexInputs == NULL);
+            pOutReflection->pVertexInputs = (VertexInput*)tf_malloc(sizeof(VertexInput) * pSrcRef->mVertexInputsCount);
+            memcpy(pOutReflection->pVertexInputs, pSrcRef->pVertexInputs, sizeof(VertexInput) * pSrcRef->mVertexInputsCount);
         }
 #if !defined(METAL)
         else if (pSrcRef->mShaderStage == SHADER_STAGE_HULL)
@@ -320,4 +323,5 @@ void removePipelineReflection(PipelineReflection* pReflection)
     tf_free(pReflection->pShaderResources);
     tf_free(pReflection->pVariables);
     tf_free(pReflection->pNamePool);
+    tf_free(pReflection->pVertexInputs);
 }
