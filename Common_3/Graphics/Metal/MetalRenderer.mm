@@ -91,12 +91,6 @@ VkAllocationCallbacks gMtlAllocationCallbacks = {
     [](void* pUserData, size_t size, VkInternalAllocationType allocationType, VkSystemAllocationScope allocationScope) {}
 };
 
-typedef struct DescriptorIndexMap
-{
-    char*    key;
-    uint32_t value;
-} DescriptorIndexMap;
-
 typedef struct QuerySampleRange
 {
     // Sample start in sample buffer

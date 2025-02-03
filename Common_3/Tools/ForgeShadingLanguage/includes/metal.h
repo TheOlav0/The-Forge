@@ -342,7 +342,7 @@ void AtomicMaxU64(device uint64_t& DEST, ulong VALUE)
 #define SampleTex2D SampleTex1D
 #define SampleTex3D SampleTex1D
 
-#define LoadRWTex1D(TEX, P) (TEX).read((P))
+#define LoadRWTex1D(TEX, P) (TEX).read(uint(P))
 #define LoadRWTex2D(TEX, P) (TEX).read(uint2((P).xy))
 #define LoadRWTex3D(TEX, P) (TEX).read(uint3((P).xyz))
 

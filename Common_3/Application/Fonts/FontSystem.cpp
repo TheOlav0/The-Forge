@@ -400,13 +400,13 @@ void loadFontSystem(const FontSystemLoadDesc* pDesc)
         vertexLayout.mAttribs[0].mSemantic = SEMANTIC_POSITION;
         vertexLayout.mAttribs[0].mFormat = TinyImageFormat_R32G32_SFLOAT;
         vertexLayout.mAttribs[0].mBinding = 0;
-        vertexLayout.mAttribs[0].mLocation = 0;
+        vertexLayout.mAttribs[0].mLocation = 1;
         vertexLayout.mAttribs[0].mOffset = 0;
 
         vertexLayout.mAttribs[1].mSemantic = SEMANTIC_TEXCOORD0;
         vertexLayout.mAttribs[1].mFormat = TinyImageFormat_R32G32_SFLOAT;
         vertexLayout.mAttribs[1].mBinding = 0;
-        vertexLayout.mAttribs[1].mLocation = 1;
+        vertexLayout.mAttribs[1].mLocation = 9;
         vertexLayout.mAttribs[1].mOffset = TinyImageFormat_BitSizeOfBlock(vertexLayout.mAttribs[0].mFormat) / 8;
 
         BlendStateDesc blendStateDesc = {};

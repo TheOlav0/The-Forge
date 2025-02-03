@@ -87,6 +87,28 @@ struct ShaderReflectionInfo
     BufferInfo*         vertexAttributes;
 };
 
+static const char* semanticNames[MAX_SEMANTICS] = {
+        "UNDEFINED",
+        "POSITION",
+        "NORMAL",
+        "COLOR",
+        "TANGENT",
+        "BITANGENT",
+        "JOINTS",
+        "WEIGHTS",
+        "CUSTOM",
+        "TEXCOORD0",
+        "TEXCOORD1",
+        "TEXCOORD2",
+        "TEXCOORD3",
+        "TEXCOORD4",
+        "TEXCOORD5",
+        "TEXCOORD6",
+        "TEXCOORD7",
+        "TEXCOORD8",
+        "TEXCOORD9"
+    };
+
 static void freeShaderReflectionInfo(ShaderReflectionInfo* pInfo)
 {
     arrfree(pInfo->variableMembers);
@@ -486,7 +508,7 @@ static void reflectShader(ShaderReflectionInfo* info, NSArray<MTLArgument*>* sha
     }
 }
 
-static uint32_t calculateNamePoolSize(const ShaderReflectionInfo* shaderReflectionInfo)
+static uint32_t calculateNamePoolSize(const ShaderReflectionInfo* shaderReflectionInfo, ShaderStage shaderStage)
 {
     uint32_t namePoolSize = 0;
     for (ptrdiff_t i = 0; i < arrlen(shaderReflectionInfo->variableMembers); i++)
@@ -525,7 +547,15 @@ static uint32_t calculateNamePoolSize(const ShaderReflectionInfo* shaderReflecti
     for (ptrdiff_t i = 0; i < arrlen(shaderReflectionInfo->vertexAttributes); i++)
     {
         const BufferInfo& attr = shaderReflectionInfo->vertexAttributes[i];
-        namePoolSize += (uint32_t)strlen(attr.name) + 1;
+        if (shaderStage == SHADER_STAGE_VERT)
+        {
+            ASSERT(attr.bufferIndex < MAX_SEMANTICS);
+            namePoolSize += (uint32_t)strlen(semanticNames[attr.bufferIndex]) + 1;
+        }
+        else
+        {
+            namePoolSize += (uint32_t)strlen(attr.name) + 1;
+        }
     }
     return namePoolSize;
 }
@@ -749,7 +779,7 @@ void mtl_addShaderReflection(Renderer* pRenderer, Shader* shader, ShaderStage sh
 
     // lets find out the size of the name pool we need
     // also get number of resources while we are at it
-    uint32_t namePoolSize = calculateNamePoolSize(&reflectionInfo);
+    uint32_t namePoolSize = calculateNamePoolSize(&reflectionInfo, shaderStage);
     uint32_t resourceCount = 0;
     uint32_t variablesCount = (uint32_t)arrlen(reflectionInfo.variableMembers);
 
@@ -798,9 +828,10 @@ void mtl_addShaderReflection(Renderer* pRenderer, Shader* shader, ShaderStage sh
             const BufferInfo& vertexBufferInfo = reflectionInfo.vertexAttributes[i];
             pVertexInputs[i].size = (uint32_t)vertexBufferInfo.sizeInBytes;
             pVertexInputs[i].name = pCurrentName;
-            pVertexInputs[i].name_size = (uint32_t)strlen(vertexBufferInfo.name);
-            // we don't own the names memory we need to copy it to the name pool
-            memcpy(pCurrentName, vertexBufferInfo.name, pVertexInputs[i].name_size);
+            ASSERT(vertexBufferInfo.bufferIndex < MAX_SEMANTICS);
+                pVertexInputs[i].name_size = (uint32_t)strlen(semanticNames[vertexBufferInfo.bufferIndex]);
+                // we don't own the names memory we need to copy it to the name pool
+                memcpy(pCurrentName, semanticNames[vertexBufferInfo.bufferIndex], pVertexInputs[i].name_size);
             pCurrentName += pVertexInputs[i].name_size + 1;
         }
     }

@@ -36,6 +36,45 @@ targetToMslEntry = {
     Stages.COMP: 'kernel',
 }
 
+def semanticToAttributeIndex(sem):
+    if "POSITION" in sem:
+        return 1
+    if "NORMAL" in sem:
+        return 2
+    if "COLOR" in sem:
+        return 3
+    if "TANGENT" in sem:
+        return 4
+    if "BITANGENT" in sem:
+        return 5
+    if "JOINTS" in sem:
+        return 6
+    if "WEIGHTS" in sem:
+        return 7
+    if "CUSTOM" in sem:
+        return 8
+    if "TEXCOORD0" in sem:
+        return 9
+    if "TEXCOORD1" in sem:
+        return 10
+    if "TEXCOORD2" in sem:
+        return 11
+    if "TEXCOORD3" in sem:
+        return 12
+    if "TEXCOORD4" in sem:
+        return 13
+    if "TEXCOORD5" in sem:
+        return 14
+    if "TEXCOORD6" in sem:
+        return 15
+    if "TEXCOORD7" in sem:
+        return 16
+    if "TEXCOORD8" in sem:
+        return 17
+    if "TEXCOORD9" in sem:
+        return 18
+    return 0
+
 def typeToMember(name):
     return 'm_'+name
 
@@ -353,8 +392,8 @@ def metal(platform: Platforms, debug, binary: ShaderBinary, dst):
                 
                 attribute = ''
                 if shader.stage == Stages.VERT:
+                    attribute_index = semanticToAttributeIndex(sem)
                     attribute = '[[attribute('+str(attribute_index)+')]]'
-                    attribute_index += 1
                 elif shader.stage == Stages.FRAG:
                     attribute = ''
                     interpolation_modifier = get_interpolation_modifier(dtype)
