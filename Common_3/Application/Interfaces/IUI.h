@@ -45,7 +45,7 @@ typedef struct Renderer      Renderer;
 typedef struct Cmd           Cmd;
 typedef struct RenderTarget  RenderTarget;
 typedef struct PipelineCache PipelineCache;
-
+typedef struct ImDrawData ImDrawData;
 #define MAX_LABEL_STR_LENGTH  128
 #define MAX_FORMAT_STR_LENGTH 30
 #define MAX_TITLE_STR_LENGTH  128
@@ -506,11 +506,13 @@ FORGE_API void loadUserInterface(const UserInterfaceLoadDesc* pDesc);
 /// To be called at application unload time by the App Layer
 FORGE_API void unloadUserInterface(uint32_t unloadType);
 
+FORGE_API void updateUserInterface(ImDrawData* pOutDrawData);
+
 /// Renders defined ImGUI components and widgets using The Forge's Renderer
 /// This function also handles rendering the Forge Profiler's UI Window.
 /// it will use the current ImGUI state, and Due to the nature of ImGUI
 /// not being thread safe, this call must be made on the main thread.
-FORGE_API void cmdDrawUserInterface(Cmd* pCmd);
+FORGE_API void cmdDrawUserInterface(Cmd* pCmd, ImDrawData* pImDrawData);
 
 /****************************************************************************/
 // MARK: - Collapsing Header Widget Public Functions

@@ -3366,7 +3366,47 @@ void unloadUserInterface(uint32_t unloadType)
 #endif
 }
 
-void cmdDrawUserInterface(Cmd* pCmd)
+void updateUserInterface(ImDrawData* pOutDrawData)
+{
+#ifdef ENABLE_FORGE_UI
+    ASSERT(pOutDrawData);
+    // Early return if UI rendering has been disabled
+    if (!pUserInterface->mEnableRendering)
+    {
+        return;
+    }
+    pOutDrawData->TotalVtxCount = 0;
+    pOutDrawData->TotalIdxCount = 0;
+    pOutDrawData->CmdListsCount = 0;
+
+    ImGui::SetCurrentContext(pUserInterface->context);
+    ImGui::Render();
+    ImDrawListSharedData* pSharedData = ImGui::GetDrawListSharedData();
+    ImDrawData* pImDrawData = ImGui::GetDrawData();
+    if (pImDrawData)
+    {
+
+        pOutDrawData->CmdLists.clear_delete();
+        const int cmdListSize = pImDrawData->CmdLists.size();
+        pOutDrawData->CmdLists.resize(cmdListSize);
+        pOutDrawData->CmdListsCount = cmdListSize;
+        pOutDrawData->DisplayPos = pImDrawData->DisplayPos;
+        pOutDrawData->DisplaySize = pImDrawData->DisplaySize;
+        pOutDrawData->FramebufferScale = pImDrawData->FramebufferScale;
+        pOutDrawData->OwnerViewport = pImDrawData->OwnerViewport;
+        pOutDrawData->Valid = pImDrawData->Valid;
+        for (uint32_t idx = 0; idx < pImDrawData->CmdLists.size(); ++idx)
+        {
+            ImDrawList* drawList = pImDrawData->CmdLists[idx];
+            pOutDrawData->TotalVtxCount += pImDrawData->CmdLists[idx]->VtxBuffer.Size;
+            pOutDrawData->TotalIdxCount += pImDrawData->CmdLists[idx]->IdxBuffer.Size;
+            pOutDrawData->CmdLists[idx] = drawList->CloneOutput();
+        }
+    }
+#endif
+}
+
+void cmdDrawUserInterface(Cmd* pCmd, ImDrawData* pImDrawData)
 {
 #ifdef ENABLE_FORGE_UI
 
@@ -3375,10 +3415,6 @@ void cmdDrawUserInterface(Cmd* pCmd)
     {
         return;
     }
-
-    ImGui::SetCurrentContext(pUserInterface->context);
-    ImGui::Render();
-    ImDrawData* pImDrawData = ImGui::GetDrawData();
 
     float2 displayPos(0.f, 0.f);
     float2 displaySize(0.f, 0.f);
