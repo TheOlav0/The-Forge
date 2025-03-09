@@ -93,8 +93,8 @@ void getRecommendedResolution(RectDesc* rect)
 
     ASSERT(pMonitor->resolutions && pMonitor->currentResolution < arrlen(pMonitor->resolutions));
 
-    const uint32_t monitorWidth = (uint32_t)pMonitor->resolutions[pMonitor->currentResolution].mWidth;
-    const uint32_t monitorHeight = (uint32_t)pMonitor->resolutions[pMonitor->currentResolution].mHeight;
+    const uint32_t monitorWidth = (uint32_t)pMonitor->defaultResolution.mWidth;
+    const uint32_t monitorHeight = (uint32_t)pMonitor->defaultResolution.mHeight;
 
     const uint32_t desiredWidth = (uint32_t)(monitorWidth * RECOMMENDED_WINDOW_SIZE_DISPLAY_FRACTION);
     const uint32_t desiredHeight = (uint32_t)(monitorHeight * RECOMMENDED_WINDOW_SIZE_DISPLAY_FRACTION);
