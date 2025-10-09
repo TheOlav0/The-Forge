@@ -113,9 +113,9 @@ enum
 #endif
 
 // Enable graphics debug if general debug is turned on
-#ifdef FORGE_DEBUG
 // Runtime checks by Forge itself
 #define ENABLE_GRAPHICS_RUNTIME_CHECK
+#ifdef FORGE_DEBUG
 // Graphics API Validation
 #define ENABLE_GRAPHICS_VALIDATION
 // Object names, markers and labels
