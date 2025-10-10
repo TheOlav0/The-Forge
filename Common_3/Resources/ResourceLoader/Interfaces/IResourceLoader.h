@@ -210,8 +210,9 @@ typedef struct Geometry
     GeometryBuffer* pGeometryBuffer;
 
     GeometryMeshlets meshlets;
-
-    uint32_t mPad[20];
+    float3 mMinAABB;
+    float3 mMaxAABB;
+    uint32_t mPad[14];
 } Geometry;
 
 static_assert(sizeof(Geometry) == 352, "If Geometry size changes we need to rebuild all custom binary meshes");
