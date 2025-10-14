@@ -206,6 +206,7 @@ f2x2 setRow(inout f2x2 M, in float2 row, const uint i) { M[i] = row; return M; }
 // #if defined(DIRECT3D12) || defined(DIRECT3D11)
 //     #define FSL_VertexID(NAME)         uint  NAME : SV_VertexID
 //     #define SV_InstanceID(NAME)        uint  NAME : SV_InstanceID
+//     #define SV_StartInstanceLocation(NAME)     uint  NAME : SV_StartInstanceLocation
 //     #define FSL_GroupID(NAME)          uint3 NAME : SV_GroupID
 //     #define FSL_DispatchThreadID(NAME) uint3 NAME : SV_DispatchThreadID
 //     #define FSL_GroupThreadID(NAME)    uint3 NAME : SV_GroupThreadID

@@ -60,6 +60,7 @@
 
 #define SV_VERTEXID         gl_VertexIndex
 #define SV_INSTANCEID       gl_InstanceIndex
+#define SV_STARTINSTANCELOCATION       gl_BaseInstance
 #define SV_ISFRONTFACE      gl_FrontFacing 
 #define SV_GROUPID          gl_WorkGroupID
 #define SV_DISPATCHTHREADID gl_GlobalInvocationID

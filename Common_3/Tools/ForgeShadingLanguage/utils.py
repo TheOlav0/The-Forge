@@ -83,6 +83,7 @@ class Features(Enum):
     INVARIANT = 8,
     ATOMICS_64 = 9,
     DYNAMIC_RESOURCES = 10,
+    START_INSTANCE = 11,
 
 feature_mask = { f: [] for f in Features }
 feature_mask[Features.MULTIVIEW] = [Platforms.QUEST]
@@ -406,6 +407,7 @@ def getShader(platform: Platforms, binary: ShaderBinary, fsl: list, dst=None, li
         flat_arg_dtypes = [
             'SV_VERTEXID',
             'SV_INSTANCEID',
+            'SV_STARTINSTANCELOCATION',
             'SV_GROUPID',
             'SV_DISPATCHTHREADID',
             'SV_GROUPTHREADID',

@@ -254,6 +254,9 @@ def glsl(platform: Platforms, debug, binary: ShaderBinary, dst):
             'GL_EXT_ray_flags_primitive_culling',
         ]
 
+    if Features.START_INSTANCE in binary.features:
+        version = max(version, 460)
+
     if Platforms.QUEST == platform:
         if Features.MULTIVIEW in binary.features:
             extensions += [

@@ -87,6 +87,7 @@ def util_shadertarget_dx(stage, features):
         Features.DYNAMIC_RESOURCES: '_6_6',
         Features.RAYTRACING: '_6_5',
         Features.VRS: '_6_4',
+        Features.START_INSTANCE: '_6_8',
     }
     if features is not None:
         level_dx = '_5_1' # xbox/dx12 default
@@ -106,6 +107,8 @@ def util_shadertarget_dx(stage, features):
 
 def util_spirv_target(features):
     if Features.RAYTRACING in features:
+        return 'spirv1.4'
+    if Features.START_INSTANCE in features:
         return 'spirv1.4'
     return 'spirv1.3' # vulkan1.1 default
 

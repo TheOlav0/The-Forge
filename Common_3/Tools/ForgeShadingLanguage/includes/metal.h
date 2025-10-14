@@ -54,6 +54,7 @@ float length(int2 x)
 
 #define SV_VERTEXID         [[vertex_id]]
 #define SV_INSTANCEID       [[instance_id]]
+#define SV_STARTINSTANCELOCATION [[base_instance]]
 #define SV_ISFRONTFACE      [[front_facing]]
 #define SV_GROUPID          [[threadgroup_position_in_grid]]
 #define SV_DISPATCHTHREADID [[thread_position_in_grid]]
