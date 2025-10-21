@@ -135,16 +135,19 @@ bvec3 Equal(vec3 X, float Y) { return equal(X, vec3(Y));}
 bvec2 LessThan(in(vec2) a, in(float) b)      { return lessThan(a, vec2(b)); }
 bvec2 LessThan(in(vec2) a, in(vec2) b)       { return lessThan(a, b);}
 bvec3 LessThan(in(vec3) X, in(float) Y)      { return lessThan(X, f3(Y)); }
+bvec4 LessThan(in(vec4) X, in(float) Y)      { return lessThan(X, f4(Y)); }
 bvec3 LessThanEqual(in(vec3) X, in(float) Y) { return lessThanEqual(X, f3(Y)); }
 bvec2 LessThanEqual(in(vec2) a, in(vec2) b)  { return lessThanEqual(a, b);}
 
 bvec2 GreaterThan(in(vec2) a, in(float) b)      { return greaterThan(a, vec2(b)); }
 bvec3 GreaterThan(in(vec3) a, in(float) b)      { return greaterThan(a, f3(b)); }
+bvec4 GreaterThan(in(vec4) a, in(float) b)      { return greaterThan(a, f4(b)); }
 bvec2 GreaterThan(in(uvec2) a, in(uint) b)      { return greaterThan(a, uvec2(b)); }
 bvec2 GreaterThan(in(vec2) a, in(vec2) b)       { return greaterThan(a, b);}
 bvec2 GreaterThanEqual(in(vec2) a, in(vec2) b)  { return greaterThanEqual(a, b);}
-bvec4 GreaterThan(in(vec4) a, in(vec4) b)       { return greaterThan(a, b); }
 bvec3 GreaterThanEqual(in(vec3) a, in(float) b) { return greaterThanEqual(a, vec3(b)); }
+bvec4 GreaterThanEqual(in(vec4) a, in(float) b) { return greaterThanEqual(a, vec4(b)); }
+bvec4 GreaterThan(in(vec4) a, in(vec4) b)       { return greaterThan(a, b); }
 
 bvec2 And(in(bvec2) a, in(bvec2) b)
 { return bvec2(a.x && b.x, a.y && b.y); }
