@@ -125,6 +125,7 @@ float radians(float degrees)
 // parameter qualifiers, map 'in T x' to 'const thread T& x', 'out/inout T x' to 'thread T& x'
 // for shared variables, 'shared(T) x' get mapped to 'threadgroup T& x'
 
+#define in_array(T, X) constant T (X)
 #define inout_array(T, X) thread T (&X)
 #define out_array inout_array
 
