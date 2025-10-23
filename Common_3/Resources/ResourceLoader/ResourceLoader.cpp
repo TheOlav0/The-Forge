@@ -3285,8 +3285,11 @@ void removeResource(Geometry* pGeom)
     {
         removeGeometryBufferPart(&pGeom->pGeometryBuffer->mIndex, &pGeom->mIndexBufferChunk);
 
-        for (uint32_t i = 0; i < pGeom->mVertexBufferCount; ++i)
+        for (uint32_t i = 0; i < MAX_VERTEX_BINDINGS; ++i)
         {
+			if (pGeom->mVertexBufferChunks[i].mSize == 0)
+				continue;
+
             removeGeometryBufferPart(&pGeom->pGeometryBuffer->mVertex[i], &pGeom->mVertexBufferChunks[i]);
         }
     }
