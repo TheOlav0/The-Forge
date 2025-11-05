@@ -4700,7 +4700,7 @@ void cmdExecuteIndirect(Cmd* pCmd, IndirectArgumentType type, uint maxCommandCou
             }
 
             [pCmd->pBlitEncoder optimizeIndirectCommandBuffer:pIndirectBuffer->pIndirectCommandBuffer
-                                                    withRange:NSMakeRange(rangeOffset, maxCommandCount)];
+                                                    withRange:NSMakeRange(rangeOffset, maxCommandCount - rangeOffset)];
             return;
         }
         else if (type == INDIRECT_COMMAND_BUFFER_RESET && maxCommandCount)
@@ -4713,13 +4713,13 @@ void cmdExecuteIndirect(Cmd* pCmd, IndirectArgumentType type, uint maxCommandCou
                 util_barrier_required(pCmd, QUEUE_TYPE_TRANSFER);
             }
             [pCmd->pBlitEncoder resetCommandsInBuffer:pIndirectBuffer->pIndirectCommandBuffer
-                                            withRange:NSMakeRange(rangeOffset, maxCommandCount)];
+                                            withRange:NSMakeRange(rangeOffset, maxCommandCount -  rangeOffset)];
             return;
         }
         else if ((pIndirectBuffer->pIndirectCommandBuffer || type == INDIRECT_COMMAND_BUFFER) && maxCommandCount)
         {
             [pCmd->pRenderEncoder executeCommandsInBuffer:pIndirectBuffer->pIndirectCommandBuffer
-                                                withRange:NSMakeRange(rangeOffset, maxCommandCount)];
+                                                withRange:NSMakeRange(rangeOffset, maxCommandCount - rangeOffset)];
             return;
         }
     }

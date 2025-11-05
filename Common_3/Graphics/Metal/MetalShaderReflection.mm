@@ -913,7 +913,7 @@ void mtl_addShaderReflection(Renderer* pRenderer, Shader* shader, ShaderStage sh
                 else
                 {
                     DescriptorType descriptorType =
-                        isDescriptorRootConstant(bufferInfo.name) ? DESCRIPTOR_TYPE_ROOT_CONSTANT : DESCRIPTOR_TYPE_BUFFER;
+                        isDescriptorRootConstant(bufferInfo.name) ? DESCRIPTOR_TYPE_ROOT_CONSTANT : (bufferInfo.isUAV ? DESCRIPTOR_TYPE_RW_BUFFER : DESCRIPTOR_TYPE_BUFFER);
                     descriptorType = bufferInfo.isAccelerationStructure ? DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE : descriptorType;
 
                     addShaderResource(pResources, resourceIdx, descriptorType, bufferInfo.bufferIndex, bufferInfo.sizeInBytes,
