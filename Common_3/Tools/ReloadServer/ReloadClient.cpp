@@ -132,9 +132,11 @@ typedef struct ReloadClient
     UpdatedShader*       pUpdatedShaders;
     UpdatedShader*       pUpdatedShadersEnd;
     UIComponent*         pReloadShaderComponent;
+#ifdef ENABLE_FORGE_UI
     DynamicUIWidgets     mButtonWidget;
     bool                 mIsButtonActiveState;
     bool                 mLastButtonActiveState;
+#endif
     tfrg_atomic32_t      mDidReload;
     tfrg_atomic32_t      mShouldReenableButton;
     tfrg_atomic32_t      mIsReloading;
@@ -554,8 +556,10 @@ bool platformInitReloadClient(void)
     gClient.mDidInit = true;
     gClient.pUpdatedShaders = nullptr;
     gClient.pUpdatedShadersEnd = nullptr;
+#ifdef ENABLE_FORGE_UI
     gClient.mIsButtonActiveState = true;
     gClient.mLastButtonActiveState = true;
+#endif
     tfrg_atomic32_store_release(&gClient.mDidReload, 0);
     tfrg_atomic32_store_release(&gClient.mShouldReenableButton, 0);
     tfrg_atomic32_store_release(&gClient.mIsReloading, 0);
@@ -585,9 +589,9 @@ void platformExitReloadClient()
         tf_free(cur);
         cur = next;
     }
-
+#ifdef ENABLE_FORGE_UI
     uiRemoveDynamicWidgets(&gClient.mButtonWidget);
-
+#endif
     exitNetwork();
     // Pass compiler check by casting to void*
     memset((void*)&gClient, 0, sizeof(ReloadClient));
@@ -601,7 +605,9 @@ void platformReloadClientRequestShaderRecompile()
         return;
     }
 
+#ifdef ENABLE_FORGE_UI
     gClient.mIsButtonActiveState = false;
+#endif
     bassigncstr(&gClient.mNotification, "Connecting to reload server...");
 
     ThreadDesc desc = { requestRecompileThreadFunc, nullptr, "ShaderRecompile" };
@@ -656,8 +662,9 @@ bool platformReloadClientShouldQuit(void)
         joinThread(gClient.mThread);
         gClient.mThread = INVALID_THREAD_ID;
         tfrg_atomic32_store_release(&gClient.mIsReloading, 0);
+#ifdef ENABLE_FORGE_UI
         gClient.mIsButtonActiveState = true;
-
+#endif
         if (tfrg_atomic32_load_relaxed(&gClient.mDidReload))
         {
             bassigncstr(&gClient.mNotification, "Notification: None");
@@ -668,6 +675,7 @@ bool platformReloadClientShouldQuit(void)
         }
     }
 
+#ifdef ENABLE_FORGE_UI
     // Must be updated this way. Can't hide button in its own callback.
     if (gClient.mIsButtonActiveState != gClient.mLastButtonActiveState)
     {
@@ -681,6 +689,7 @@ bool platformReloadClientShouldQuit(void)
         }
         gClient.mLastButtonActiveState = gClient.mIsButtonActiveState;
     }
+#endif
 
     if (tfrg_atomic32_store_release(&gClient.mDidReload, 0) == 1)
     {
@@ -702,6 +711,7 @@ bool platformReloadClientShouldQuit(void)
 
 void platformReloadClientAddReloadShadersWidgets(UIComponent* pReloadShaderComponent)
 {
+#ifdef ENABLE_FORGE_UI
     if (!gClient.mDidInit)
     {
         return;
@@ -727,4 +737,5 @@ void platformReloadClientAddReloadShadersWidgets(UIComponent* pReloadShaderCompo
     uiShowDynamicWidgets(&gClient.mButtonWidget, pReloadShaderComponent);
 
     gClient.pReloadShaderComponent = pReloadShaderComponent;
+#endif
 }
