@@ -199,7 +199,7 @@ int AssetPipelineCmd(int argc, char** argv)
         inputPath[size] = '/';
 
     char outputPath[FS_MAX_PATH] = { 0 };
-    fsNormalizePath(output, '/', outputPath);
+	size = fsNormalizePath(output, '/', outputPath);
     if (outputPath[size - 1] != '/')
         outputPath[size] = '/';
 

@@ -3381,7 +3381,6 @@ void updateUserInterface(ImDrawData* pOutDrawData)
 
     ImGui::SetCurrentContext(pUserInterface->context);
     ImGui::Render();
-    ImDrawListSharedData* pSharedData = ImGui::GetDrawListSharedData();
     ImDrawData* pImDrawData = ImGui::GetDrawData();
     if (pImDrawData)
     {
@@ -3395,7 +3394,7 @@ void updateUserInterface(ImDrawData* pOutDrawData)
         pOutDrawData->FramebufferScale = pImDrawData->FramebufferScale;
         pOutDrawData->OwnerViewport = pImDrawData->OwnerViewport;
         pOutDrawData->Valid = pImDrawData->Valid;
-        for (uint32_t idx = 0; idx < pImDrawData->CmdLists.size(); ++idx)
+        for (int idx = 0; idx < pImDrawData->CmdLists.size(); ++idx)
         {
             ImDrawList* drawList = pImDrawData->CmdLists[idx];
             pOutDrawData->TotalVtxCount += pImDrawData->CmdLists[idx]->VtxBuffer.Size;
