@@ -352,6 +352,8 @@ typedef struct GeometryLoadDesc
     /// Function used to load the geometry
     /// Defaults to TF-Custom Format
     GeomLoadFunc pLoadFunction;
+    
+    void* pUserData;
 
 } GeometryLoadDesc;
 
