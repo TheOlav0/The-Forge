@@ -252,6 +252,8 @@ bool2 And(const bool2 a, const bool2 b)
 // _GREATER_THAN(int)
 // bool4 GreaterThan(const float4 a, const float4 b) { return a > b; }
 
+#define Equal(X, Y) ((X) == (Y))
+#define NotEqual(X, Y) ((X) != (Y))
 #define GreaterThan(A, B)      ((A) > (B))
 #define GreaterThanEqual(A, B) ((A) >= (B))
 #define LessThan(A, B)         ((A) < (B))
@@ -262,6 +264,7 @@ bool2 And(const bool2 a, const bool2 b)
 #define AllLessThan(X, Y)         all(LessThan(X, Y))
 #define AllLessThanEqual(X, Y)    all(LessThanEqual((X), (Y)))
 
+#define AnyNotEqual(X, Y)         any(NotEqual(X, Y))
 #define AnyGreaterThan(X, Y)      any(GreaterThan(X, Y))
 #define AnyGreaterThanEqual(X, Y) any(GreaterThanEqual(X, Y))
 #define AnyLessThan(X, Y)         any(LessThan(X, Y))
@@ -281,8 +284,6 @@ uint insert_bits(uint src, uint ins, uint off, uint bits)
     uint bitmask = (((1u << bits)-1) << off) & 0xffffffff;
     return ((ins << off) & bitmask) | (src & ~bitmask);
 } // ABfiM
-
-#define Equal(X, Y) ((X) == (Y))
 
 #define row_major(X) X
 

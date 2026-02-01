@@ -118,6 +118,7 @@
 #define FLAT(TYPE) TYPE
 #define CENTROID(TYPE) TYPE
 
+#define AnyNotEqual(X, Y)         any( notEqual((X), (Y)) )
 #define AnyLessThan(X, Y)         any( LessThan((X), (Y)) )
 #define AnyLessThanEqual(X, Y)    any( LessThanEqual((X), (Y)) )
 #define AnyGreaterThan(X, Y)      any( GreaterThan((X), (Y)) )
